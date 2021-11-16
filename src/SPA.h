@@ -1,5 +1,8 @@
 #ifndef _SPA_H
 #define _SPA_H
+
+#define UNIX
+
 using namespace std;
 
 class SPA
