@@ -104,6 +104,7 @@ public:
     }
 
     void get_top_k_with_frequency(uint16_t k, vector<pair<uint32_t, uint32_t>> & result) {
+        result.resize(k);
         KV * a = new KV[capacity];
         memcpy(a, heap, sizeof(heap));
         sort(a, a + capacity);

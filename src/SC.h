@@ -2,6 +2,7 @@
 #define _SC_H
 
 //#include "params.h"
+#include <iostream>
 #include "BOBHash32.h"
 #include "SPA.h"
 #include <cstring>
@@ -17,12 +18,14 @@ using namespace std;
 
 #define MAX_HASH_NUM 4
 
+// StreamClassifier<int64_t(total_memory_in_bytes) * filter_memory_percent / 100, bucket_num(16), 16, T2> sc;
 template<int memory_in_bytes, int bucket_num = 1000, int counter_num = 16, int threshold = 240, int l1_ratio = 65>
 class StreamClassifier
 {
 //    static constexpr int bucket_num = 1000;
 //    static constexpr int counter_num = 16;
 
+    // ID for 4 bytes and Counter for 4 bytes, 8 bytes in total per KV store
     static constexpr int buffer_size = bucket_num * counter_num * 8;
     static constexpr int remained = memory_in_bytes - buffer_size;
 
@@ -35,8 +38,10 @@ class StreamClassifier
     int counter[bucket_num][counter_num];
     int cur_pos[bucket_num];
 
+    // w1 counter in L1, and w1 / 16 words in L2 because sigma_1 = 4
     static constexpr int w1 = m1_in_bytes * 8 / 4;
     static constexpr int w_word = m1_in_bytes * 8 / 4 / 16;
+    // w2 counter in L2
     static constexpr int w2 = m2_in_bytes * 8 / 16;
 
     uint64_t L1[m1_in_bytes * 8 / 4 / 16]; // Layer 1 is organized as word, one word contains 16 counter, one counter consist of 4 bit
@@ -61,6 +66,8 @@ class StreamClassifier
 public:
     StreamClassifier()
     {
+        // std::cout << memory_in_bytes << " " << bucket_num <<  " " << counter_num \
+            // << " " <<  threshold <<  " " << l1_ratio <<  " " << std::endl;
         bobhash1 = new BOBHash32(500);
         for (int i = 0; i < d2; i++) {
             bobhash2[i] = new BOBHash32(1000 + i);

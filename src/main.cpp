@@ -32,8 +32,10 @@ int load_data(const char *filename) {
         insert_data[ret] = key;
         ground_truth[key]++;
         ret++;
-        if (ret == MAX_INSERT_PACKAGE)
+        if (ret == MAX_INSERT_PACKAGE){
+            cout << "MAX_INSERT_PACKAGE" << endl;
             break;
+        }
     }
     fclose(pf);
 
@@ -60,9 +62,10 @@ void demo_cu(int packet_num)
     printf("\tAllocate 10KB memory for each algorithm\n");
 
     auto cu = new CUSketch<10 * 1024, 3>();
+    cu -> print_basic_info();
     auto sc_cu = new CUSketchWithSC<10 * 1024, 90, 16>();
 
-    int tot_ae;
+    long long tot_ae;
 
     // build and query for cu
     for (int i = 0; i < packet_num; ++i) {
@@ -75,6 +78,7 @@ void demo_cu(int packet_num)
         tot_ae += abs(report_val - itr.second);
     }
 
+    printf("Report\n");
     printf("\tCU AAE: %lf\n", double(tot_ae) / ground_truth.size());
 
     // build and query for cu + sc
@@ -296,8 +300,9 @@ void demo_flow_radar(int packet_num)
 int main()
 {
     int packet_num = load_data("../data/sample.dat");
-    demo_cu(packet_num);
+    // int packet_num = load_data("/share/datasets/CAIDA2016/formatted00.dat");
+    // demo_cu(packet_num);
     demo_ss(packet_num);
-    demo_flow_radar(packet_num);
+    // demo_flow_radar(packet_num);
     return 0;
 }

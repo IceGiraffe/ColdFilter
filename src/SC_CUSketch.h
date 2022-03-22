@@ -13,13 +13,16 @@ template<uint64_t total_memory_in_bytes, int filter_memory_percent, int bucket_n
 class CUSketchWithSC
 {
 public:
+    // cold filter SC
     StreamClassifier<int64_t(total_memory_in_bytes) * filter_memory_percent / 100, bucket_num, 16, T2> sc;
+    // CU Sketch next layer
     CUSketch<int((total_memory_in_bytes) * (100 - filter_memory_percent) / 100), 3> cu;
+    
     CUSketchWithSC()
     {
         sc.init_spa(&cu);
-//        sc.print_basic_info();
-//        cu.print_basic_info();
+        sc.print_basic_info();
+        cu.print_basic_info();
     }
 
     inline void insert(uint32_t item)

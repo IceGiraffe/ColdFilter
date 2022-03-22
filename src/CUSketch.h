@@ -9,6 +9,8 @@
 
 using namespace std;
 
+// memory_in_bytes 表示总的字节数，d表示哈希次数
+// auto cu = new CUSketch<10 * 1024, 3>(); 10KB,3 Hash
 template <int memory_in_bytes, int d>
 class CUSketch: public SPA
 {

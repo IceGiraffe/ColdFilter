@@ -7,6 +7,7 @@
 template<uint32_t ss_capacity, uint64_t sc_memory_in_bytes, uint32_t threshold, uint32_t bucket_num = 96>
 class SC_SpaceSaving
 {
+public:
     StreamClassifier<sc_memory_in_bytes, bucket_num, 16, ((threshold - 15) > 65535 ? 65535 : (threshold - 15)), 35> sc;
     SpaceSaving<ss_capacity> ss;
 public:
