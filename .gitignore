@@ -1,3 +1,4 @@
+#new git ignore file
 *
 !*/
 !*.cpp
